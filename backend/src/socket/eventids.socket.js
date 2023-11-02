@@ -1,4 +1,5 @@
 module.exports = {
   ENTER : 100,
   ENTER_SUCCESS: 101,
+  USERNAME_DUPLICATED : 150,
 };
