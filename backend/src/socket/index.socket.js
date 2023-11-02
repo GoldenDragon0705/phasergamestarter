@@ -53,7 +53,7 @@ const Socket = (io) => {
       sockets[thisSocketId].username = username;
       const nUsers = Object.keys(users);
       // if this user create room
-      if(nUsers % 2 == 0) {
+      if(nUsers & 1 == 0) {
         createRoomAndEnter();
       } else {
         // get waiting room Ids
@@ -76,7 +76,7 @@ const Socket = (io) => {
             ...rooms.running[roomId], 
             me: { username },
             opposite : { username : oppoisteUsername } });
-            
+
           sockets[room.players[oppoisteUsername].socketId].socket.emit(SOCKET_IDS.ENTER_SUCCESS, {
             ...rooms.running[roomId], 
             me : { username : oppoisteUsername },
@@ -88,21 +88,33 @@ const Socket = (io) => {
       }
     });
 
-    const outFromRoom = (roomId, username) => {
-        
+    const outFromRoom = (isConnected = false) => {
+      const roomId = sockets[thisSocketId].roomId;
+      const username = sockets[thisSocketId].username;
       if(rooms.running[roomId]) {
         delete rooms.running[roomId].players[username];
-        rooms.waiting[roomId] = rooms.running[roomId];
+        const oppositeName = Object.keys(rooms.running[roomId].players)[0];
+        const oppositeSocketId = rooms.running[roomId].players[oppositeName].socketId;
+        /* waiting[roomId] = rooms.running[roomId]; */
         // delete running room
         delete rooms.running[roomId];
+        sockets[oppositeSocketId].socket.emit(SOCKET_IDS.QUIT_SUCCESS);
+        isConnected && sockets[thisSocketId].socket.emit(SOCKET_IDS.QUIT_SUCCESS);
+        // destroy oppoiste socket info
+        sockets[oppositeSocketId].roomId = 0;
+        sockets[oppositeSocketId].username = "";
+        delete users[oppositeName];
         // send to opposite user to this user is outed, so this match is stopped and waiting
-
-
       } else if(rooms.waiting[roomId]) {
         delete rooms.waiting[roomId];
       }
       sockets[thisSocketId].roomId = 0;
+      sockets[thisSocketId].username = "";
     };
+
+    socket.on(SOCKET_IDS.QUIT, () => {
+      outFromRoom(true);
+    });
 
     socket.on("disconnect", () => {
       console.log("A client is disconnected: " + thisSocketId);
@@ -110,7 +122,7 @@ const Socket = (io) => {
       if(!socketInfo) return;
       // get out from room
       if(socketInfo.roomId) {
-        outFromRoom(socketInfo.roomId, socketInfo.username);
+        outFromRoom();
       }
       if(socketInfo.username) {
         delete users[socketInfo.username];
