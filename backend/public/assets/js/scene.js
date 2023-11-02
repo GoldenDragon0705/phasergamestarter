@@ -2,6 +2,7 @@ const createGame = (data) => {
 
   var config = {
     type: Phaser.AUTO,
+    parent: 'game',
     width: 800,
     height: 600,
     physics: {
@@ -11,19 +12,24 @@ const createGame = (data) => {
       }
     },
     scene: {
+      init: init,
       preload: preload,
-      create: create
+      create: create,
     }
   }
 
   var game = new Phaser.Game(config);
 
-  const preload = () => {
+  function init() {
+
+  }
+
+  function preload() {
     this.load.image('x', 'assets/imgs/x.png');
   }
 
-  const create = () => {
+  function create() {
     this.add.image(400, 300, 'x');
-    
+
   }
 } 
