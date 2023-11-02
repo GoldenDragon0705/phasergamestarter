@@ -113,6 +113,7 @@ const Socket = (io) => {
     };
 
     socket.on(SOCKET_IDS.QUIT, () => {
+      console.log("Recevie quit event from client.: " + thisSocketId);
       outFromRoom(true);
     });
 
