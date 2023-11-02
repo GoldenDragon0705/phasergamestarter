@@ -1,3 +1,4 @@
 const SOCKET_PROC = {
-  ENTER_ROOM: 100
+  ENTER_ROOM: 100,
+  START:101,
 };
