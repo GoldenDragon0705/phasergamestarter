@@ -1,8 +1,7 @@
 const socket = io();
 
 socket.on(SOCKET_PROC.QUIT_SUCCESS, (data) => {
-  console.log("quit success")
-  // quitGame(data)
+  document.getElementById("game").innerHTML = "";
 })
 const enter = () => {
   const username = document.getElementById("input").value;
