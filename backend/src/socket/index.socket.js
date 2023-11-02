@@ -47,7 +47,7 @@ const Socket = (io) => {
       // validate of this username is not duplicated
       if(Object.keys(users).indexOf(username) >= 0) {
         // this username is duplicated
-        socket.emit(USERNAME_DUPLICATED);
+        socket.emit(SOCKET_IDS.USERNAME_DUPLICATED);
         return ;
       }
 
@@ -118,6 +118,7 @@ const Socket = (io) => {
       }
       sockets[thisSocketId].roomId = 0;
       sockets[thisSocketId].username = "";
+      delete users[username];
     };
 
     socket.on(SOCKET_IDS.QUIT, () => {
@@ -132,9 +133,6 @@ const Socket = (io) => {
       // get out from room
       if(socketInfo.roomId) {
         outFromRoom();
-      }
-      if(socketInfo.username) {
-        delete users[socketInfo.username];
       }
       delete sockets[thisSocketId];
     });
