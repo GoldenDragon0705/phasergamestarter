@@ -20,6 +20,7 @@ const Socket = (io) => {
     };
 
     socket.on(SOCKET_IDS.ENTER, data => {
+      console.log("A client send to enter event.");
       const { username } = data;
       // set username of this socket
       sockets[socket.id].username = username;
