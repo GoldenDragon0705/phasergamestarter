@@ -20,13 +20,15 @@ const Socket = (io) => {
     };
 
     socket.on(SOCKET_IDS.ENTER, data => {
-      console.log("A client send to enter event.");
+
+      console.log("A client send to enter event: " + socket.id);
+
       const { username } = data;
       // set username of this socket
       sockets[socket.id].username = username;
       const nUsers = Object.keys(users);
       // if this user create room
-      if(nUsers % 2 == 1) {
+      if(nUsers % 2 == 0) {
         const newRoomId = ++roomId;
         // create waiting room and enter this room
         rooms.waiting[newRoomId] = { players : [ username ] };

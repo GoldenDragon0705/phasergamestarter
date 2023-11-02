@@ -1,12 +1,9 @@
+const socket = io();
 
 const enter = () => {
-  const socket = io();
   const username = document.getElementById("input").value;
-
   socket.emit(SOCKET_PROC.ENTER_ROOM, { username })
-
-  socket.on(SOCKET_PROC.START, (data) => {
+  socket.on(SOCKET_PROC.ENTER_SUCCESS, (data) => {
     createGame(data);
-    
   })
 }
