@@ -61,7 +61,7 @@ const Socket = (io) => {
         if(waitingRoomIds.length) {
           const enterRoomId = waitingRoomIds[0];
           let room = rooms.waiting[enterRoomId];
-          let oppoisteUsername = Object.keys(rooms.waiting[enterRoomId]);
+          let oppoisteUsername = Object.keys(rooms.waiting[enterRoomId].players)[0];
           // update room info
           room = {...room, players : {
             ...room.players,
