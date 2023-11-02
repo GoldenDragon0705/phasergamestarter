@@ -33,7 +33,7 @@ const Socket = (io) => {
         rooms.waiting[newRoomId] = { roomId: newRoomId, players : {
           [username] : { socketId: thisSocketId }
         }};
-        socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.waiting[newRoomId] });
+        // socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.waiting[newRoomId] });
         // if after 30s, this room is not auto-closed, close this room
       };
 
@@ -61,6 +61,7 @@ const Socket = (io) => {
         if(waitingRoomIds.length) {
           const enterRoomId = waitingRoomIds[0];
           let room = rooms.waiting[enterRoomId];
+          let oppoisteUsername = Object.keys(rooms.waiting[enterRoomId]);
           // update room info
           room = {...room, players : {
             ...room.players,
@@ -70,8 +71,9 @@ const Socket = (io) => {
           // this room's status is running
           rooms.running[roomId] = room;
           delete rooms.waiting[roomId];
-          // send result to client enter a room
+          // send result to clients enter a room
           socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.running[roomId] });
+          sockets[room.players[oppoisteUsername].socketId].emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.running[roomId] });
         } else {
           // no waiting rooms, you need create a room or send result to enter room is failed
           createRoomAndEnter();
@@ -88,7 +90,7 @@ const Socket = (io) => {
         delete rooms.running[roomId];
         // send to opposite user to this user is outed, so this match is stopped and waiting
 
-        
+
       } else if(rooms.waiting[roomId]) {
         delete rooms.waiting[roomId];
       }
