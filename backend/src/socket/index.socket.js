@@ -72,8 +72,8 @@ const Socket = (io) => {
           rooms.running[roomId] = room;
           delete rooms.waiting[roomId];
           // send result to clients enter a room
-          socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.running[roomId] });
-          sockets[room.players[oppoisteUsername].socketId].socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.running[roomId] });
+          socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.running[roomId], me: { username } });
+          sockets[room.players[oppoisteUsername].socketId].socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.running[roomId], me : { username } });
         } else {
           // no waiting rooms, you need create a room or send result to enter room is failed
           createRoomAndEnter();
