@@ -27,6 +27,9 @@ const Socket = (io) => {
 
       console.log("A client send to enter event: " + thisSocketId);
 
+      // get username from socket request
+      const { username } = data;
+
       const createRoomAndEnter = () => {
         const newRoomId = ++roomId;
         // create waiting room and enter this room
@@ -35,10 +38,11 @@ const Socket = (io) => {
         }};
         // socket.emit(SOCKET_IDS.ENTER_SUCCESS, { ...rooms.waiting[newRoomId] });
         // if after 30s, this room is not auto-closed, close this room
-      };
 
-      // get username from socket request
-      const { username } = data;
+        // bind user and room info to room
+        sockets[thisSocketId].roomId = newRoomId;
+        sockets[thisSocketId].username = username;
+      };
 
       // validate of this username is not duplicated
       if(Object.keys(users).indexOf(username) >= 0) {
@@ -81,6 +85,9 @@ const Socket = (io) => {
             ...rooms.running[roomId], 
             me : { username : oppoisteUsername },
             opposite : { username }});
+            // bind user and room info to room
+            sockets[thisSocketId].roomId = roomId;
+            sockets[thisSocketId].username = username;
         } else {
           // no waiting rooms, you need create a room or send result to enter room is failed
           createRoomAndEnter();
@@ -92,6 +99,7 @@ const Socket = (io) => {
       const roomId = sockets[thisSocketId].roomId;
       const username = sockets[thisSocketId].username;
       if(rooms.running[roomId]) {
+        console.log("Request quit room is running. " + roomId);
         delete rooms.running[roomId].players[username];
         const oppositeName = Object.keys(rooms.running[roomId].players)[0];
         const oppositeSocketId = rooms.running[roomId].players[oppositeName].socketId;
