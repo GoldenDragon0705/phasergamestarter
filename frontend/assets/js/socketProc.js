@@ -1,0 +1,3 @@
+const SOCKET_PROC = {
+  ENTER_ROOM: 100
+};
